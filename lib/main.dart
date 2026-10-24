@@ -714,3 +714,88 @@ class _EditorPageState extends State<EditorPage> {
                       icon: const Icon(Icons.arrow_downward_rounded)),
                   IconButton(
                       tooltip: 'Delete',
+                                          onPressed: layers.length > 1 ? _deleteLayer : null,
+                      icon: const Icon(Icons.delete_outline_rounded)),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            Expanded(
+              child: ListView.builder(
+                itemCount: layers.length,
+                itemBuilder: (ctx, idx) {
+                  final i = layers.length - 1 - idx;
+                  final l = layers[i];
+                  final sel = i == active;
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: sel ? kAccentSoft : kBg,
+                      borderRadius: BorderRadius.circular(12),
+                      border: sel ? Border.all(color: kAccent) : null,
+                    ),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () => setState(() => active = i),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  width: 44,
+                                  height: 58,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF7F0DC),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: RawImage(
+                                      image: l.image, fit: BoxFit.contain),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(child: Text(l.name)),
+                                IconButton(
+                                  icon: Icon(l.visible
+                                      ? Icons.visibility_rounded
+                                      : Icons.visibility_off_rounded),
+                                  onPressed: () {
+                                    setState(() => l.visible = !l.visible);
+                                    tick.value++;
+                                  },
+                                ),
+                              ],
+                            ),
+                            if (sel)
+                              Row(
+                                children: [
+                                  const Text('Opacity',
+                                      style: TextStyle(
+                                          fontSize: 12, color: Colors.white70)),
+                                  Expanded(
+                                    child: Slider(
+                                      value: l.opacity,
+                                      min: 0,
+                                      max: 1,
+                                      onChanged: (v) {
+                                        setState(() => l.opacity = v);
+                                        tick.value++;
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
